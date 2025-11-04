@@ -16,13 +16,36 @@
 				<button id="guess-submit" type="submit">Valider</button>
 			</form>
 
+			<div id="controls" style="margin-top:1rem;">
+				<label for="length-select">Longueur :</label>
+				<select id="length-select">
+					<option value="4">4</option>
+					<option value="5">5</option>
+					<option value="6">6</option>
+				</select>
+
+				<label for="maxdigit-select" style="margin-left:0.75rem">Chiffres :</label>
+				<select id="maxdigit-select">
+					<option value="6">1–6</option>
+					<option value="9">1–9</option>
+				</select>
+
+				<button id="apply-settings" type="button" style="margin-left:0.75rem">Appliquer</button>
+			</div>
+
 			<section id="results" aria-live="polite">
 				<h2>Historique des tentatives</h2>
 				<ul id="history" class="history-list"></ul>
 			</section>
+
+					<div id="status" aria-live="assertive" class="status" style="margin-top:1rem"></div>
+
+					<button id="new-game" type="button" style="margin-top:0.75rem; display:none">Nouvelle partie</button>
+
 		</main>
 
 		<script src="script.js" defer></script>
+    
 	</body>
 </html>
 
