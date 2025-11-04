@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="fr">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width,initial-scale=1" />
+		<title>TP Mastermind - Propositions</title>
+		<link rel="stylesheet" href="style.css" />
+	</head>
+	<body>
+		<main class="container">
+			<h1>Mastermind — Proposez un code</h1>
+
+			<form id="guess-form" aria-label="Formulaire de proposition">
+				<label for="guess-input">Votre proposition</label>
+				<input id="guess-input" name="guess" type="text" inputmode="numeric" autocomplete="off" placeholder="Entrez votre proposition" />
+				<button id="guess-submit" type="submit">Valider</button>
+			</form>
+
+			<section id="results" aria-live="polite">
+				<h2>Historique des tentatives</h2>
+				<ul id="history" class="history-list"></ul>
+			</section>
+		</main>
+
+		<script src="script.js" defer></script>
+	</body>
+</html>
+
