@@ -1,3 +1,5 @@
+
+
 <!doctype html>
 <html lang="fr">
 	<head>
@@ -9,18 +11,15 @@
 	<body>
 		<main class="container">
 			<h1>Mastermind — Proposez un code</h1>
-
 			<form id="guess-form" aria-label="Formulaire de proposition">
 				<label for="guess-input">Votre proposition</label>
 				<div class="input-wrapper" style="width:100%">
-					<!-- Container visuel pour la sélection en mode couleurs (pastilles à l'intérieur de la zone d'entrée) -->
 					<div id="selection" aria-live="polite" style="display:flex;gap:6px;flex-wrap:wrap"></div>
 					<input id="guess-input" name="guess" type="text" inputmode="numeric" autocomplete="off" placeholder="Entrez votre proposition" />
 					<button id="guess-submit" type="submit">Valider</button>
 				</div>
 				<button id="clear-selection" type="button" style="margin-top:8px;display:none">Effacer</button>
 			</form>
-
 			<div id="controls" style="margin-top:1rem;">
 				<label for="length-select">Longueur :</label>
 				<select id="length-select">
@@ -28,36 +27,25 @@
 					<option value="5">5</option>
 					<option value="6">6</option>
 				</select>
-
 				<label style="margin-left:0.75rem">Mode :</label>
 				<label style="margin-left:0.25rem"><input type="radio" name="mode" value="digits" id="mode-digits" checked /> Chiffres</label>
 				<label style="margin-left:0.5rem"><input type="radio" name="mode" value="colors" id="mode-colors" /> Couleurs</label>
-
 				<label for="maxdigit-select" style="margin-left:0.75rem">Chiffres :</label>
 				<select id="maxdigit-select">
 					<option value="6">1–6</option>
 					<option value="9">1–9</option>
 				</select>
-
 				<button id="apply-settings" type="button" style="margin-left:0.75rem">Appliquer</button>
 			</div>
-
-			<!-- Légende des couleurs disponibles / mapping -->
 			<div id="color-legend" aria-live="polite" style="margin-top:0.75rem; display:flex; gap:0.5rem; flex-wrap:wrap"></div>
-
 			<section id="results" aria-live="polite">
 				<h2>Historique des tentatives</h2>
 				<ul id="history" class="history-list"></ul>
 			</section>
-
-					<div id="status" aria-live="assertive" class="status" style="margin-top:1rem"></div>
-
-					<button id="new-game" type="button" style="margin-top:0.75rem; display:none">Nouvelle partie</button>
-
+			<div id="status" aria-live="assertive" class="status" style="margin-top:1rem"></div>
+			<button id="new-game" type="button" style="margin-top:0.75rem; display:none">Nouvelle partie</button>
 		</main>
-
 		<script src="script.js" defer></script>
-    
 	</body>
 </html>
 
