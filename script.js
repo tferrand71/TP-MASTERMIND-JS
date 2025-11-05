@@ -21,6 +21,49 @@ document.addEventListener('DOMContentLoaded', () => {
   let currentLength = Number(lengthSelect.value) || 4;
   let currentMaxDigit = Number(maxDigitSelect.value) || 6;
 
+  // Mode: 'digits' or 'colors'
+  const modeDigitsEl = document.getElementById('mode-digits');
+  const modeColorsEl = document.getElementById('mode-colors');
+  let currentMode = modeColorsEl && modeColorsEl.checked ? 'colors' : 'digits';
+
+  // Palette de noms de couleurs (1->Rouge, 2->Vert, ...). Suffit pour max 9.
+  const COLOR_NAMES = ['Rouge', 'Vert', 'Bleu', 'Jaune', 'Orange', 'Violet', 'Cyan', 'Magenta', 'Marron'];
+  // Couleurs CSS correspondantes pour les swatches
+  const COLOR_CODES = ['#e74c3c', '#27ae60', '#2980b9', '#f1c40f', '#e67e22', '#8e44ad', '#1abc9c', '#ff00ff', '#8b4513'];
+
+  const legendEl = document.getElementById('color-legend');
+
+  // Render the legend showing available colors (number -> name + swatch)
+  function renderLegend(maxD = currentMaxDigit) {
+    if (!legendEl) return;
+    legendEl.innerHTML = '';
+    for (let i = 1; i <= maxD; i++) {
+      const item = document.createElement('div');
+      item.style.display = 'inline-flex';
+      item.style.alignItems = 'center';
+      item.style.gap = '0.4rem';
+      item.style.padding = '0.2rem 0.4rem';
+      item.style.borderRadius = '6px';
+      item.style.background = '#f5f5f5';
+      item.style.fontSize = '0.9rem';
+
+      const swatch = document.createElement('span');
+      swatch.style.display = 'inline-block';
+      swatch.style.width = '18px';
+      swatch.style.height = '18px';
+      swatch.style.borderRadius = '4px';
+      swatch.style.border = '1px solid #ccc';
+      swatch.style.background = COLOR_CODES[i - 1] || '#ddd';
+
+      const label = document.createElement('span');
+      label.textContent = `${i} = ${COLOR_NAMES[i - 1] || i}`;
+
+      item.appendChild(swatch);
+      item.appendChild(label);
+      legendEl.appendChild(item);
+    }
+  }
+
   // La combinaison secrète est stockée localement et reste cachée
   let secret = generateSecret(currentLength, currentMaxDigit);
 
@@ -45,7 +88,14 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function endGame(message, revealSecret = false) {
-    if (revealSecret) message += ` La combinaison était : ${secret.join('')}.`;
+    if (revealSecret) {
+      if (currentMode === 'colors') {
+        const names = secret.map(n => COLOR_NAMES[n - 1] || n).join(' - ');
+        message += ` La combinaison était : ${names} (${secret.join('')}).`;
+      } else {
+        message += ` La combinaison était : ${secret.join('')}.`;
+      }
+    }
     setStatus(message, revealSecret);
     disableInput();
     newGameBtn.style.display = 'inline-block';
@@ -64,10 +114,24 @@ document.addEventListener('DOMContentLoaded', () => {
     input.value = '';
     input.focus();
     // console.debug('SECRET (dev only):', secret);
+    // Mettre à jour la légende des couleurs en fonction du paramètre
+    renderLegend(currentMaxDigit);
   }
 
   newGameBtn.addEventListener('click', newGame);
   applySettingsBtn.addEventListener('click', newGame);
+  // Update legend if the max digit changes
+  maxDigitSelect.addEventListener('change', () => {
+    const maxD = Number(maxDigitSelect.value) || 6;
+    renderLegend(maxD);
+  });
+
+  // Radios mode change -> mettre à jour currentMode
+  if (modeDigitsEl) modeDigitsEl.addEventListener('change', () => { currentMode = 'digits'; setStatus('Mode : Chiffres'); });
+  if (modeColorsEl) modeColorsEl.addEventListener('change', () => { currentMode = 'colors'; setStatus('Mode : Couleurs'); });
+
+  // Render initial legend
+  renderLegend(currentMaxDigit);
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -79,7 +143,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const re = new RegExp(`^[1-${maxD}]{${expectedLen}}$`);
     if (!re.test(value)) {
       const err = document.createElement('li');
-      err.textContent = `Format invalide — entrez ${expectedLen} chiffres (1-${maxD}), exemple : ${'1'.repeat(expectedLen)}`;
+      if (currentMode === 'colors') {
+        const mapping = Array.from({ length: maxD }, (_, i) => `${i + 1}=${COLOR_NAMES[i] || i + 1}`).join(', ');
+        err.textContent = `Format invalide — entrez ${expectedLen} chiffres (1-${maxD}). Mapping : ${mapping}. Exemple : ${'1'.repeat(expectedLen)}`;
+      } else {
+        err.textContent = `Format invalide — entrez ${expectedLen} chiffres (1-${maxD}), exemple : ${'1'.repeat(expectedLen)}`;
+      }
       err.style.color = 'crimson';
       history.appendChild(err);
       return;
@@ -94,7 +163,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const msg = `Tentative ${attemptCount} : ${value} → ${blacks} bien plac${pluralBlacks}, ${whites} mal plac${pluralWhites}.`;
 
     const li = document.createElement('li');
-    li.textContent = msg;
+    if (currentMode === 'colors') {
+      const colors = value.split('').map(ch => COLOR_NAMES[Number(ch) - 1] || ch).join(' - ');
+      li.textContent = `${msg} (${colors})`;
+    } else {
+      li.textContent = msg;
+    }
     // append pour conserver l'ordre chronologique (1..N)
     history.appendChild(li);
 

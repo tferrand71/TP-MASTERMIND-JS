@@ -24,6 +24,10 @@
 					<option value="6">6</option>
 				</select>
 
+				<label style="margin-left:0.75rem">Mode :</label>
+				<label style="margin-left:0.25rem"><input type="radio" name="mode" value="digits" id="mode-digits" checked /> Chiffres</label>
+				<label style="margin-left:0.5rem"><input type="radio" name="mode" value="colors" id="mode-colors" /> Couleurs</label>
+
 				<label for="maxdigit-select" style="margin-left:0.75rem">Chiffres :</label>
 				<select id="maxdigit-select">
 					<option value="6">1–6</option>
@@ -32,6 +36,9 @@
 
 				<button id="apply-settings" type="button" style="margin-left:0.75rem">Appliquer</button>
 			</div>
+
+			<!-- Légende des couleurs disponibles / mapping -->
+			<div id="color-legend" aria-live="polite" style="margin-top:0.75rem; display:flex; gap:0.5rem; flex-wrap:wrap"></div>
 
 			<section id="results" aria-live="polite">
 				<h2>Historique des tentatives</h2>
