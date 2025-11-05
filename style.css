@@ -1,0 +1,84 @@
+/* style.css — style chaleureux, lisible et professionnel pour TP Mastermind */
+
+:root{
+	--bg: #f7f6f3;
+	--card: #ffffff;
+	--muted: #6b6b6b;
+	--accent: #2b7a78; /* teal */
+	--accent-2: #ffb703; /* warm yellow */
+	--danger: #e63946;
+	--radius: 10px;
+	--shadow: 0 6px 18px rgba(30,30,30,0.08);
+	--glass: rgba(255,255,255,0.6);
+	font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+}
+
+html,body{height:100%;margin:0;background:linear-gradient(180deg,var(--bg),#eef2f1);color:#222}
+
+main.container{
+	/* Augmenté pour éviter le wrapping des pastilles dans la zone d'entrée */
+	max-width:1200px;
+	margin:36px auto;
+	padding:24px;
+}
+
+h1{margin:0 0 12px;font-size:1.6rem;color:var(--accent)}
+
+/* Card / game panel */
+main.container > * {
+	background: var(--card);
+	border-radius: var(--radius);
+	box-shadow: var(--shadow);
+	padding:16px;
+}
+
+form#guess-form{display:flex;gap:8px;align-items:center}
+#guess-input{flex:1;padding:10px 12px;border-radius:8px;border:1px solid #e6e6e6;font-size:1rem}
+#guess-input:disabled{background:#f4f4f4}
+button{background:var(--accent);color:white;border:none;padding:10px 14px;border-radius:8px;cursor:pointer;font-weight:600}
+button:disabled{opacity:0.6;cursor:not-allowed}
+
+#controls{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:12px}
+#controls select{padding:6px 8px;border-radius:6px;border:1px solid #e7e7e7}
+
+#results{margin-top:14px}
+#history{list-style:none;padding:0;margin:0;max-height:320px;overflow:auto}
+#history li{padding:8px 10px;border-radius:6px;margin-bottom:8px;background:linear-gradient(90deg, #ffffff, #fbfbfb);border:1px solid #f0f0f0}
+
+.status{padding:10px 12px;border-radius:8px;margin-top:8px;background:linear-gradient(90deg, #ffffff, #fcfcfc);border:1px solid #eee}
+
+#new-game{background:var(--accent-2);color:#222;border-radius:8px;padding:8px 12px;font-weight:700}
+
+/* legend styles */
+#color-legend{margin-top:10px}
+#color-legend div{display:inline-flex;align-items:center;padding:6px;border-radius:8px;border:1px solid rgba(0,0,0,0.05);background:var(--glass)}
+#color-legend span{font-size:0.95rem}
+
+/* selection chips for color mode */
+#selection{margin-top:0}
+.input-wrapper{display:flex;align-items:center;gap:8px;padding:8px;border-radius:10px;border:1px solid #e6e6e6;background:var(--card);box-shadow:var(--shadow);
+	/* empêcher le wrapping des chips et autoriser le scroll horizontal si nécessaire */
+	flex-wrap:nowrap;overflow-x:auto}
+.input-wrapper input{flex:1;border:none;background:transparent;padding:6px 8px;font-size:1rem;min-width:60px}
+.input-wrapper input:disabled, .input-wrapper input[readonly]{background:transparent}
+.chip{display:inline-flex;align-items:center;gap:8px;padding:6px 8px;border-radius:16px;background:#fff;border:1px solid #eee;box-shadow:0 2px 6px rgba(0,0,0,0.04);white-space:nowrap;margin-right:6px}
+.chip .dot{width:16px;height:16px;border-radius:4px;border:1px solid #ccc}
+.chip .remove{background:transparent;border:none;color:var(--muted);cursor:pointer;font-weight:700}
+.chip .remove:focus{outline:2px solid rgba(0,0,0,0.05)}
+
+#clear-selection{background:#fff;border:1px solid #eee;padding:8px 10px;border-radius:8px;cursor:pointer;margin-left:8px}
+
+/* small screens */
+@media (max-width:640px){
+	main.container{margin:18px;padding:12px}
+	form#guess-form{flex-direction:column;align-items:stretch}
+	#controls{gap:6px}
+}
+
+/* helper classes */
+.error{color:var(--danger);font-weight:600}
+.muted{color:var(--muted)}
+
+/* accessible focus */
+button:focus, input:focus{outline:3px solid rgba(43,122,120,0.12);outline-offset:2px}
+

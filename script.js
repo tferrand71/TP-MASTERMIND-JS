@@ -32,6 +32,59 @@ document.addEventListener('DOMContentLoaded', () => {
   const COLOR_CODES = ['#e74c3c', '#27ae60', '#2980b9', '#f1c40f', '#e67e22', '#8e44ad', '#1abc9c', '#ff00ff', '#8b4513'];
 
   const legendEl = document.getElementById('color-legend');
+  const selectionEl = document.getElementById('selection');
+  const clearSelectionBtn = document.getElementById('clear-selection');
+
+  // Selection array used in color mode (stores digits as strings)
+  let selection = [];
+
+  function updateInputFromSelection() {
+    input.value = selection.join('');
+  }
+
+  function renderSelection() {
+    if (!selectionEl) return;
+    selectionEl.innerHTML = '';
+    selection.forEach((d, idx) => {
+      const chip = document.createElement('div');
+      chip.className = 'chip';
+      const dot = document.createElement('span');
+      dot.className = 'dot';
+      dot.style.background = COLOR_CODES[Number(d) - 1] || '#ddd';
+      const text = document.createElement('span');
+      text.textContent = COLOR_NAMES[Number(d) - 1] || d;
+      const remove = document.createElement('button');
+      remove.className = 'remove';
+      remove.type = 'button';
+      remove.setAttribute('aria-label', `Retirer ${text.textContent}`);
+      remove.textContent = '×';
+      remove.addEventListener('click', () => {
+        selection.splice(idx, 1);
+        renderSelection();
+        updateInputFromSelection();
+      });
+      chip.appendChild(dot);
+      chip.appendChild(text);
+      chip.appendChild(remove);
+      selectionEl.appendChild(chip);
+    });
+    // show/hide clear button
+    if (clearSelectionBtn) clearSelectionBtn.style.display = selection.length ? 'inline-block' : 'none';
+  }
+
+  function appendDigitToSelection(d) {
+    const expectedLen = currentLength || secret.length;
+    if (selection.length >= expectedLen) return; // full
+    selection.push(String(d));
+    renderSelection();
+    updateInputFromSelection();
+  }
+
+  function clearSelection() {
+    selection = [];
+    renderSelection();
+    updateInputFromSelection();
+  }
 
   // Render the legend showing available colors (number -> name + swatch)
   function renderLegend(maxD = currentMaxDigit) {
@@ -60,6 +113,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
       item.appendChild(swatch);
       item.appendChild(label);
+      // Si mode couleurs, rendre cliquable pour ajouter à la sélection
+      item.dataset.value = String(i);
+      item.style.cursor = 'default';
+      item.tabIndex = 0;
+      item.addEventListener('click', () => {
+        if (currentMode === 'colors') appendDigitToSelection(i);
+      });
+      item.addEventListener('keydown', (ev) => {
+        if ((ev.key === 'Enter' || ev.key === ' ') && currentMode === 'colors') {
+          ev.preventDefault();
+          appendDigitToSelection(i);
+        }
+      });
       legendEl.appendChild(item);
     }
   }
@@ -116,6 +182,24 @@ document.addEventListener('DOMContentLoaded', () => {
     // console.debug('SECRET (dev only):', secret);
     // Mettre à jour la légende des couleurs en fonction du paramètre
     renderLegend(currentMaxDigit);
+    // clear any previous selection
+    clearSelection();
+    // set input visibility in color mode and show/hide selection area
+    if (modeColorsEl && modeColorsEl.checked) {
+      // hide the textual input and show chips only
+      input.style.display = 'none';
+      currentMode = 'colors';
+      setStatus('Mode : Couleurs');
+      if (selectionEl) selectionEl.style.display = 'flex';
+      if (clearSelectionBtn) clearSelectionBtn.style.display = 'none';
+    } else {
+      // show the textual input for digit entry
+      input.style.display = '';
+      currentMode = 'digits';
+      setStatus('Mode : Chiffres');
+      if (selectionEl) selectionEl.style.display = 'none';
+      if (clearSelectionBtn) clearSelectionBtn.style.display = 'none';
+    }
   }
 
   newGameBtn.addEventListener('click', newGame);
@@ -126,16 +210,46 @@ document.addEventListener('DOMContentLoaded', () => {
     renderLegend(maxD);
   });
 
+  // clear selection button
+  if (clearSelectionBtn) clearSelectionBtn.addEventListener('click', () => clearSelection());
+
   // Radios mode change -> mettre à jour currentMode
-  if (modeDigitsEl) modeDigitsEl.addEventListener('change', () => { currentMode = 'digits'; setStatus('Mode : Chiffres'); });
-  if (modeColorsEl) modeColorsEl.addEventListener('change', () => { currentMode = 'colors'; setStatus('Mode : Couleurs'); });
+  if (modeDigitsEl) modeDigitsEl.addEventListener('change', () => {
+    currentMode = 'digits';
+    input.style.display = '';
+    setStatus('Mode : Chiffres');
+    clearSelection();
+    if (selectionEl) selectionEl.style.display = 'none';
+    if (clearSelectionBtn) clearSelectionBtn.style.display = 'none';
+  });
+  if (modeColorsEl) modeColorsEl.addEventListener('change', () => {
+    currentMode = 'colors';
+    input.style.display = 'none';
+    setStatus('Mode : Couleurs');
+    clearSelection();
+    if (selectionEl) selectionEl.style.display = 'flex';
+    if (clearSelectionBtn) clearSelectionBtn.style.display = 'none';
+  });
 
   // Render initial legend
   renderLegend(currentMaxDigit);
+  // Set initial visibility of selection area
+  if (currentMode === 'colors') {
+    if (selectionEl) selectionEl.style.display = 'flex';
+    if (input) input.style.display = 'none';
+  } else {
+    if (selectionEl) selectionEl.style.display = 'none';
+    if (input) input.style.display = '';
+  }
+
+  function getSubmissionValue() {
+    if (currentMode === 'colors') return selection.join('');
+    return input.value.trim();
+  }
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
-    const value = input.value.trim();
+    const value = getSubmissionValue();
 
     // Validation dynamique selon les paramètres courants
     const expectedLen = secret.length;
@@ -158,9 +272,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const { blacks, whites } = checkGuess(value);
 
-    const pluralBlacks = blacks > 1 ? 's' : '';
-    const pluralWhites = whites > 1 ? 's' : '';
-    const msg = `Tentative ${attemptCount} : ${value} → ${blacks} bien plac${pluralBlacks}, ${whites} mal plac${pluralWhites}.`;
+  const pluralBlacks = blacks > 1 ? 's' : '';
+  const pluralWhites = whites > 1 ? 's' : '';
+  const msg = `Tentative ${attemptCount} : ${value} → ${blacks} bien placé${pluralBlacks}, ${whites} mal placé${pluralWhites}.`;
 
     const li = document.createElement('li');
     if (currentMode === 'colors') {
@@ -184,8 +298,13 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    input.value = '';
-    input.focus();
+    // clear input/selection after submit
+    if (currentMode === 'colors') {
+      clearSelection();
+    } else {
+      input.value = '';
+      input.focus();
+    }
   });
 
   function checkGuess(guessStr) {
