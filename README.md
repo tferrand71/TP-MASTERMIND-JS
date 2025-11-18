@@ -16,4 +16,4 @@ En mode "Couleurs", chaque chiffre représente une couleur (1 = Rouge, 2 = Vert,
 3. Composer une proposition (saisie directe en mode Chiffres, ou cliquer les pastilles en mode Couleurs), puis valider.
 
 ## Notes sur l'interface couleur
-Les pastilles sont cliquables; en mode Couleurs le champ texte est masqué et la sélection visuelle (chips) constitue la proposition envoyée.
+Les pastilles sont cliquables; en mode Couleurs le champ texte est masqué et la sélection visuelle constitue la proposition envoyée.
