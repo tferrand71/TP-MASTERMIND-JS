@@ -1,16 +1,14 @@
-
-
 <!doctype html>
 <html lang="fr">
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width,initial-scale=1" />
-		<title>TP Mastermind - Propositions</title>
+		<title>TP Mastermind</title>
 		<link rel="stylesheet" href="style.css" />
 	</head>
 	<body>
 		<main class="container">
-			<h1>Mastermind — Proposez un code</h1>
+			<h1>Mastermind</h1>
 			<form id="guess-form" aria-label="Formulaire de proposition">
 				<label for="guess-input">Votre proposition</label>
 				<div class="input-wrapper" style="width:100%">
@@ -44,8 +42,14 @@
 			</section>
 			<div id="status" aria-live="assertive" class="status" style="margin-top:1rem"></div>
 			<button id="new-game" type="button" style="margin-top:0.75rem; display:none">Nouvelle partie</button>
-		</main>
+        </main>
 		<script src="script.js" defer></script>
-	</body>
+        <div id="debug" style="background:#222;color:#0f0;padding:10px;margin:10px 0;font-family:monospace;">
+            <strong>DEBUG :</strong><br>
+            <div id="debug-secret"></div>
+            <div id="debug-guess"></div>
+            <div id="debug-result"></div>
+        </div>
+    </body>
 </html>
 
