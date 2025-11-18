@@ -1,7 +1,7 @@
 # TP Mastermind
 
 ## Résumé
-Jeu Mastermind simple et autonome (front-end) écrit en HTML/CSS/JavaScript : l'objectif est de deviner une combinaison secrète générée aléatoirement.
+Jeu Mastermind simple et autonome écrit en HTML/CSS/JavaScript : l'objectif est de deviner une combinaison secrète générée aléatoirement.
 
 ## Fonctionnalités implémentées
 
